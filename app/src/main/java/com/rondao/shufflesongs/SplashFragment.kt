@@ -1,11 +1,13 @@
 package com.rondao.shufflesongs
 
+import android.app.Application
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 
 class SplashFragment : Fragment() {
@@ -21,6 +23,7 @@ class SplashFragment : Fragment() {
 
         startMainActivity = Runnable {
             this.findNavController().navigate(R.id.action_splashFragment_to_songsListFragment)
+            (activity as AppCompatActivity).supportActionBar?.show()
         }
 
         return layoutRoot
