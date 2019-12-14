@@ -9,5 +9,18 @@
         android:id="@+id/splashFragment"
         android:name="com.rondao.shufflesongs.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" />
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_songsListFragment"
+            app:destination="@id/songsListFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/nav_graph" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/songsListFragment"
+        android:name="com.rondao.shufflesongs.SongsListFragment"
+        android:label="fragment_songs_list"
+        tools:layout="@layout/fragment_songs_list" />
 </navigation>
