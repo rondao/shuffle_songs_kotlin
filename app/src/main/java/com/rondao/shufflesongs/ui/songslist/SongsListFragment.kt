@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import com.rondao.shufflesongs.R
 import com.rondao.shufflesongs.databinding.FragmentSongsListBinding
 
 class SongsListFragment : Fragment() {
