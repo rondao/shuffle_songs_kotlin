@@ -32,7 +32,7 @@ class SongsListViewModel : ViewModel() {
         coroutineScope.launch {
             try {
                 _songsList.value = ShuffleSongsApi
-                        .retrofitService.getSongs(artists_id.joinToString(","))
+                        .retrofitService.getSongs(artists_id.joinToString(",")).results.toString()
             } catch (e: Exception) {
                 _songsList.value = "Failure: ${e.message}"
             }
