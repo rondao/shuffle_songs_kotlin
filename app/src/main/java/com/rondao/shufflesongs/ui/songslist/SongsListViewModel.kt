@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rondao.shufflesongs.network.ShuffleSongsApi
+import com.rondao.shufflesongs.network.WrapperType.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -31,8 +32,9 @@ class SongsListViewModel : ViewModel() {
     private fun fetchSongsList() {
         coroutineScope.launch {
             try {
-                _songsList.value = ShuffleSongsApi
-                        .retrofitService.getSongs(artists_id.joinToString(",")).toString()
+                val songsAndArtists = ShuffleSongsApi
+                        .retrofitService.getSongs(artists_id.joinToString(","))
+                _songsList.value = songsAndArtists.filterIsInstance<Track>().toString()
             } catch (e: Exception) {
                 _songsList.value = "Failure: ${e.message}"
             }
