@@ -1,6 +1,6 @@
 package com.rondao.shufflesongs.network
 
-import com.rondao.shufflesongs.network.converter.EnvelopedResult
+import com.rondao.shufflesongs.network.converter.EnvelopedResultConverter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit
@@ -15,6 +15,7 @@ private val moshi = Moshi.Builder()
         .build()
 
 private val retrofit = Retrofit.Builder()
+        .addConverterFactory(EnvelopedResultConverter())
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .baseUrl(BASE_URL)
         .build()
@@ -22,7 +23,7 @@ private val retrofit = Retrofit.Builder()
 interface ShuffleSongsApiService {
     @GET("lookup")
     suspend fun getSongs(@Query("id", encoded = true) artist_ids: String,
-                         @Query("limit") limit: Int = 5): EnvelopedResult<Any>
+                         @Query("limit") limit: Int = 5): Any
 }
 
 object ShuffleSongsApi {
