@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.rondao.shufflesongs.SplashFragment"
+        android:name="com.rondao.shufflesongs.ui.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/songsListFragment"
-        android:name="com.rondao.shufflesongs.SongsListFragment"
+        android:name="com.rondao.shufflesongs.ui.songslist.SongsListFragment"
         android:label="fragment_songs_list"
         tools:layout="@layout/fragment_songs_list" />
 </navigation>

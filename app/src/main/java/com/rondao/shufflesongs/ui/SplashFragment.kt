@@ -1,6 +1,5 @@
-package com.rondao.shufflesongs
+package com.rondao.shufflesongs.ui
 
-import android.app.Application
 import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
@@ -9,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
+import com.rondao.shufflesongs.R
 
 class SplashFragment : Fragment() {
 

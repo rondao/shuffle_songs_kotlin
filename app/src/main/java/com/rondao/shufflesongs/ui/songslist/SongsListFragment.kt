@@ -1,10 +1,11 @@
-package com.rondao.shufflesongs
+package com.rondao.shufflesongs.ui.songslist
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.rondao.shufflesongs.R
 
 class SongsListFragment : Fragment() {
 
