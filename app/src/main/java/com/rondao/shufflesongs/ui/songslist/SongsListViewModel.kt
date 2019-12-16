@@ -36,7 +36,7 @@ class SongsListViewModel : ViewModel() {
                         .retrofitService.getSongs(artists_id.joinToString(","))
                 _songsList.value = songsAndArtists.filterIsInstance<Track>()
             } catch (e: Exception) {
-                // Maybe add a Snack Bar event in case of error
+                // TODO: Add SnackBar event for network failure
             }
         }
     }
