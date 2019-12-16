@@ -1,0 +1,62 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="track"
+            type="com.rondao.shufflesongs.network.WrapperType.Track" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/song_image"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_baseline_image_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/ic_baseline_image_24" />
+
+        <TextView
+            android:id="@+id/song_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="20dp"
+            android:text="@{track.trackName}"
+            android:textAppearance="@style/SongTitle"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintBottom_toTopOf="@+id/song_artist_and_genre"
+            app:layout_constraintStart_toEndOf="@+id/song_image"
+            app:layout_constraintTop_toTopOf="@+id/song_image"
+            tools:text="Music Name" />
+
+        <!-- Use binding extensions to add genre at text -->
+        <TextView
+            android:id="@+id/song_artist_and_genre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="20dp"
+            android:text="@{track.artistName}"
+            android:textAppearance="@style/SongArtist"
+            app:layout_constraintBottom_toBottomOf="@+id/song_image"
+            app:layout_constraintStart_toEndOf="@+id/song_image"
+            app:layout_constraintTop_toBottomOf="@+id/song_title"
+            tools:text="Artist (Genre)" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

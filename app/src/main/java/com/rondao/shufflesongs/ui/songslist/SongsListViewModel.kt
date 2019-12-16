@@ -16,8 +16,8 @@ class SongsListViewModel : ViewModel() {
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val _songsList = MutableLiveData<String>()
-    val songsList: LiveData<String>
+    private val _songsList = MutableLiveData<List<Track>>()
+    val songsList: LiveData<List<Track>>
         get() = _songsList
 
     init {
@@ -34,9 +34,9 @@ class SongsListViewModel : ViewModel() {
             try {
                 val songsAndArtists = ShuffleSongsApi
                         .retrofitService.getSongs(artists_id.joinToString(","))
-                _songsList.value = songsAndArtists.filterIsInstance<Track>().toString()
+                _songsList.value = songsAndArtists.filterIsInstance<Track>()
             } catch (e: Exception) {
-                _songsList.value = "Failure: ${e.message}"
+                // Maybe add a Snack Bar event in case of error
             }
         }
     }
