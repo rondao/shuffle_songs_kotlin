@@ -51,4 +51,27 @@ class SongsListViewModelTest {
             previousSong = currentSong
         }
     }
+
+    @Test
+    fun shuffleSongs_nullOrEmptySongsList_noChange() {
+        val songsListViewModel = SongsListViewModel()
+
+        songsListViewModel.shuffleSongs(songsByArtist)
+        val shuffledSongsList = songsListViewModel.songsList.getOrAwaitValue()
+
+        // Every song should be at shuffled list
+        songsByArtist.forEach { (_, songsList) ->
+            songsList.forEach {
+                assertThat(shuffledSongsList, hasItem(it))
+            }
+        }
+
+        songsListViewModel.shuffleSongs(null)
+        val shuffledSongsListAfterNull = songsListViewModel.songsList.getOrAwaitValue()
+        assertThat(shuffledSongsList, equalTo(shuffledSongsListAfterNull))
+
+        songsListViewModel.shuffleSongs(mapOf())
+        val shuffledSongsListAfterEmpty = songsListViewModel.songsList.getOrAwaitValue()
+        assertThat(shuffledSongsList, equalTo(shuffledSongsListAfterNull))
+    }
 }
