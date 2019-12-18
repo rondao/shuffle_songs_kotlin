@@ -18,7 +18,7 @@ class SongsListViewModel : ViewModel() {
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private var songsByArtist: Map<Double, List<Track>>? = null
+    private var songsByArtist: Map<Int, List<Track>>? = null
 
     private val _songsList = MutableLiveData<List<Track>>()
     val songsList: LiveData<List<Track>>
@@ -74,7 +74,7 @@ class SongsListViewModel : ViewModel() {
         }
     }
 
-    private fun convertToPriorityQueue(map: Map<Double, List<Track>>?) = map?.let {
+    private fun convertToPriorityQueue(map: Map<Int, List<Track>>?) = map?.let {
         val queue = PriorityQueue<CompareListSize>()
         it.forEach { (artist, songsList) ->
             queue.add(CompareListSize(songsList.toMutableList()))
