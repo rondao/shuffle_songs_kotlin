@@ -1,9 +1,7 @@
 package com.rondao.shufflesongs.ui.songslist
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -40,8 +38,20 @@ class SongsListFragment : Fragment() {
             }
         })
 
-        // TODO: Create option menu for shuffling
-
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.songs_list_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_shuffle_songs -> viewModel.shuffleSongs()
+        }
+
+        return true
     }
 }
