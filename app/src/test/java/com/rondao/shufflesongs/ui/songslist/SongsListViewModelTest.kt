@@ -1,9 +1,8 @@
 package com.rondao.shufflesongs.ui.songslist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
+import com.rondao.shufflesongs.domain.Track
 import com.rondao.shufflesongs.getOrAwaitValue
-import com.rondao.shufflesongs.network.WrapperType.Track
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before

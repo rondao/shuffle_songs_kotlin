@@ -12,9 +12,9 @@ import retrofit2.http.Query
 private const val BASE_URL = "https://us-central1-tw-exercicio-mobile.cloudfunctions.net/"
 
 private val moshi = Moshi.Builder()
-        .add(PolymorphicJsonAdapterFactory.of(WrapperType::class.java, "wrapperType")
-                .withSubtype(WrapperType.Artist::class.java, WrapperTypes.artist.name)
-                .withSubtype(WrapperType.Track::class.java, WrapperTypes.track.name))
+        .add(PolymorphicJsonAdapterFactory.of(NetworkWrapperType::class.java, "wrapperType")
+                .withSubtype(NetworkWrapperType.NetworkArtist::class.java, NetworkWrapperTypes.artist.name)
+                .withSubtype(NetworkWrapperType.NetworkTrack::class.java, NetworkWrapperTypes.track.name))
         .add(KotlinJsonAdapterFactory())
         .build()
 
@@ -27,7 +27,7 @@ private val retrofit = Retrofit.Builder()
 interface ShuffleSongsApiService {
     @GET("lookup")
     suspend fun getSongs(@Query("id", encoded = true) artist_ids: String,
-                         @Query("limit") limit: Int = 5): List<WrapperType>
+                         @Query("limit") limit: Int = 5): List<NetworkWrapperType>
 }
 
 object ShuffleSongsApi {

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rondao.shufflesongs.databinding.ListItemSongBinding
-import com.rondao.shufflesongs.network.WrapperType.Track
+import com.rondao.shufflesongs.domain.Track
 
 class SongsListAdapter : ListAdapter<Track,
         SongsListAdapter.ViewHolder>(SongsListDiffCallback()) {

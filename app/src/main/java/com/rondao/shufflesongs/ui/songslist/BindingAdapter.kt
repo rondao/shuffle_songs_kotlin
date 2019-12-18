@@ -9,7 +9,7 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.rondao.shufflesongs.R
-import com.rondao.shufflesongs.network.WrapperType.Track
+import com.rondao.shufflesongs.domain.Track
 
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {

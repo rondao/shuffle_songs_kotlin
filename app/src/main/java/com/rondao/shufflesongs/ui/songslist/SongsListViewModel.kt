@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.rondao.shufflesongs.domain.Track
+import com.rondao.shufflesongs.network.NetworkWrapperType
 import com.rondao.shufflesongs.network.ShuffleSongsApi
-import com.rondao.shufflesongs.network.WrapperType.Track
 import com.rondao.shufflesongs.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,7 +77,8 @@ class SongsListViewModel : ViewModel() {
 
                 val songsAndArtists = ShuffleSongsApi
                         .retrofitService.getSongs(artistsId.joinToString(","))
-                val songsList = songsAndArtists.filterIsInstance<Track>()
+                val networkSongsList = songsAndArtists.filterIsInstance<NetworkWrapperType.NetworkTrack>()
+                val songsList = networkSongsList.map { it.asDomainModel() }
 
                 songsByArtist = songsList.groupBy { it.artistId }
                 _songsList.value = songsList
