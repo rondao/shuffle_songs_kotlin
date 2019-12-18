@@ -13,6 +13,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.WhiteAccent">
+        <item name="colorAccent">@android:color/white</item> <!-- Whatever color you want-->
+    </style>
+
     <style name="SongTitle" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#C25E6B</item>
         <item name="android:textSize">20sp</item>

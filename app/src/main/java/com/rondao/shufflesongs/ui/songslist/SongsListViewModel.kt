@@ -2,6 +2,7 @@ package com.rondao.shufflesongs.ui.songslist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.rondao.shufflesongs.network.ShuffleSongsApi
 import com.rondao.shufflesongs.network.WrapperType.Track
@@ -11,6 +12,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.random.Random
+
+enum class SongsListApiStatus { LOADING, ERROR, DONE }
 
 class SongsListViewModel : ViewModel() {
     private val artistsId = listOf(909253, 1171421960, 358714030, 1419227, 264111789)
@@ -23,6 +26,10 @@ class SongsListViewModel : ViewModel() {
     private val _songsList = MutableLiveData<List<Track>>()
     val songsList: LiveData<List<Track>>
         get() = _songsList
+
+    private val _status = MutableLiveData<SongsListApiStatus>()
+    val status: LiveData<SongsListApiStatus>
+        get() = _status
 
     override fun onCleared() {
         super.onCleared()
@@ -58,14 +65,18 @@ class SongsListViewModel : ViewModel() {
     fun fetchSongsList() {
         coroutineScope.launch {
             try {
+                _status.value = SongsListApiStatus.LOADING
+
                 val songsAndArtists = ShuffleSongsApi
                         .retrofitService.getSongs(artistsId.joinToString(","))
                 val songsList = songsAndArtists.filterIsInstance<Track>()
 
                 songsByArtist = songsList.groupBy { it.artistId }
                 _songsList.value = songsList
+
+                _status.value = SongsListApiStatus.DONE
             } catch (e: Exception) {
-                // TODO: Add SnackBar event for network failure
+                _status.value = SongsListApiStatus.ERROR
             }
         }
     }

@@ -32,7 +32,6 @@ class SongsListFragment : Fragment() {
         val adapter = SongsListAdapter()
         binding.songsList.adapter = adapter
 
-        // TODO: Add loading screen while wait
         viewModel.songsList.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
