@@ -33,22 +33,7 @@ class SongsListViewModel : ViewModel() {
         viewModelJob.cancel()
     }
 
-    private fun fetchSongsList() {
-        coroutineScope.launch {
-            try {
-                val songsAndArtists = ShuffleSongsApi
-                        .retrofitService.getSongs(artists_id.joinToString(","))
-                val songsList = songsAndArtists.filterIsInstance<Track>()
-
-                songsByArtist = songsList.groupBy { it.artistId }
-                _songsList.value = songsList
-            } catch (e: Exception) {
-                // TODO: Add SnackBar event for network failure
-            }
-        }
-    }
-
-    private fun shuffleSongs() {
+    fun shuffleSongs() {
         val queue = convertToPriorityQueue(songsByArtist)
         if (queue == null || queue.isEmpty()) return
 
@@ -72,21 +57,37 @@ class SongsListViewModel : ViewModel() {
 
         _songsList.value = shuffledList
     }
-}
 
-private fun convertToPriorityQueue(map: Map<Double, List<Track>>?) = map?.let {
-    val queue = PriorityQueue<CompareListSize>()
-    it.forEach { (artist, songsList) ->
-        queue.add(CompareListSize(songsList.toMutableList()))
+
+    private fun fetchSongsList() {
+        coroutineScope.launch {
+            try {
+                val songsAndArtists = ShuffleSongsApi
+                        .retrofitService.getSongs(artists_id.joinToString(","))
+                val songsList = songsAndArtists.filterIsInstance<Track>()
+
+                songsByArtist = songsList.groupBy { it.artistId }
+                _songsList.value = songsList
+            } catch (e: Exception) {
+                // TODO: Add SnackBar event for network failure
+            }
+        }
     }
-    queue
-}
 
-private fun addRandomMusic(biggestList: CompareListSize, shuffledList: MutableList<Track>): CompareListSize {
-    val indexSong = Random.nextInt(biggestList.list.size)
-    shuffledList.add(biggestList.list.removeAt(indexSong))
+    private fun convertToPriorityQueue(map: Map<Double, List<Track>>?) = map?.let {
+        val queue = PriorityQueue<CompareListSize>()
+        it.forEach { (artist, songsList) ->
+            queue.add(CompareListSize(songsList.toMutableList()))
+        }
+        queue
+    }
 
-    return biggestList
+    private fun addRandomMusic(biggestList: CompareListSize, shuffledList: MutableList<Track>): CompareListSize {
+        val indexSong = Random.nextInt(biggestList.list.size)
+        shuffledList.add(biggestList.list.removeAt(indexSong))
+
+        return biggestList
+    }
 }
 
 /**
