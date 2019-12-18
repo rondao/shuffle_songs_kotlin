@@ -13,7 +13,7 @@ import java.util.*
 import kotlin.random.Random
 
 class SongsListViewModel : ViewModel() {
-    private val artists_id = listOf(909253, 1171421960, 358714030, 1419227, 264111789)
+    private val artistsId = listOf(909253, 1171421960, 358714030, 1419227, 264111789)
 
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -63,7 +63,7 @@ class SongsListViewModel : ViewModel() {
         coroutineScope.launch {
             try {
                 val songsAndArtists = ShuffleSongsApi
-                        .retrofitService.getSongs(artists_id.joinToString(","))
+                        .retrofitService.getSongs(artistsId.joinToString(","))
                 val songsList = songsAndArtists.filterIsInstance<Track>()
 
                 songsByArtist = songsList.groupBy { it.artistId }
