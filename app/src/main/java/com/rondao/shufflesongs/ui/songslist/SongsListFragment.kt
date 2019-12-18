@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.google.android.material.snackbar.Snackbar
 import com.rondao.shufflesongs.R
 import com.rondao.shufflesongs.databinding.FragmentSongsListBinding
 
@@ -35,6 +36,12 @@ class SongsListFragment : Fragment() {
         viewModel.songsList.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
+            }
+        })
+
+        viewModel.eventStatusFailed.observe(viewLifecycleOwner, Observer {
+            it?.getContentIfNotHandled()?.let {
+                Snackbar.make(binding.root, getString(R.string.snackbar_fail_retrieve_songs), Snackbar.LENGTH_LONG).show();
             }
         })
 

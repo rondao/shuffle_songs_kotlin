@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Shuffle Songs</string>
     <string name="action_shuffle_songs">Shuffle</string>
+    <!-- TODO: Translate strings -->
+    <string name="snackbar_fail_retrieve_songs">Failed to retrieve songs, please check your internet.</string>
 </resources>

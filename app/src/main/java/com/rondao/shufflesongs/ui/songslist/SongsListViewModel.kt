@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.rondao.shufflesongs.network.ShuffleSongsApi
 import com.rondao.shufflesongs.network.WrapperType.Track
+import com.rondao.shufflesongs.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -30,6 +31,10 @@ class SongsListViewModel : ViewModel() {
     private val _status = MutableLiveData<SongsListApiStatus>()
     val status: LiveData<SongsListApiStatus>
         get() = _status
+
+    val eventStatusFailed = Transformations.map(status) { status ->
+        if (status == SongsListApiStatus.ERROR) LiveEvent(status) else null
+    }
 
     override fun onCleared() {
         super.onCleared()
