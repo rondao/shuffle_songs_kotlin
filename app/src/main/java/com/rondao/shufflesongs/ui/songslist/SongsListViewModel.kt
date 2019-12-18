@@ -90,7 +90,7 @@ class SongsListViewModel : ViewModel() {
 
     private fun convertToPriorityQueue(map: Map<Int, List<Track>>?) = map?.let {
         val queue = PriorityQueue<CompareListSize>()
-        it.forEach { (artist, songsList) ->
+        it.forEach { (_, songsList) ->
             queue.add(CompareListSize(songsList.toMutableList()))
         }
         queue
