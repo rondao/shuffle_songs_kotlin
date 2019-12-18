@@ -24,17 +24,13 @@ class SongsListViewModel : ViewModel() {
     val songsList: LiveData<List<Track>>
         get() = _songsList
 
-    init {
-        fetchSongsList()
-    }
-
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
     }
 
-    fun shuffleSongs() {
-        val queue = convertToPriorityQueue(songsByArtist)
+    fun shuffleSongs(_songsByArtist: Map<Int, List<Track>>? = songsByArtist) {
+        val queue = convertToPriorityQueue(_songsByArtist)
         if (queue == null || queue.isEmpty()) return
 
         val shuffledList = mutableListOf<Track>()
@@ -59,7 +55,7 @@ class SongsListViewModel : ViewModel() {
     }
 
 
-    private fun fetchSongsList() {
+    fun fetchSongsList() {
         coroutineScope.launch {
             try {
                 val songsAndArtists = ShuffleSongsApi

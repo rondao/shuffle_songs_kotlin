@@ -23,6 +23,7 @@ class SongsListFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+        viewModel.fetchSongsList()
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         getDrawable(context!!, R.drawable.divider)?.let { divider.setDrawable(it) }
@@ -51,7 +52,6 @@ class SongsListFragment : Fragment() {
         when (item.itemId) {
             R.id.action_shuffle_songs -> viewModel.shuffleSongs()
         }
-
         return true
     }
 }
