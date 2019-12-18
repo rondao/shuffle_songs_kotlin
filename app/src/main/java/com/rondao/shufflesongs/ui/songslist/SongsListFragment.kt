@@ -51,6 +51,11 @@ class SongsListFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.songs_list_menu, menu)
+
+        viewModel.isSongsListNotEmpty.observe(viewLifecycleOwner, Observer {
+            menu.findItem(R.id.action_shuffle_songs).isVisible = it
+        })
+
         super.onCreateOptionsMenu(menu, inflater)
     }
 

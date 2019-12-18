@@ -28,6 +28,8 @@ class SongsListViewModel : ViewModel() {
     val songsList: LiveData<List<Track>>
         get() = _songsList
 
+    val isSongsListNotEmpty = Transformations.map(songsList) { it.isNotEmpty() }
+
     private val _status = MutableLiveData<SongsListApiStatus>()
     val status: LiveData<SongsListApiStatus>
         get() = _status

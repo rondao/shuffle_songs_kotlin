@@ -5,5 +5,6 @@
         android:id="@+id/action_shuffle_songs"
         android:icon="@drawable/shuffle"
         android:title="@string/action_shuffle_songs"
+        android:visible="false"
         app:showAsAction="ifRoom" />
 </menu>
