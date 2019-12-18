@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/song_title"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/song_title"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/artwork_margin"
             android:layout_marginLeft="@dimen/artwork_margin"
@@ -46,16 +46,16 @@
         <!-- Use binding extensions to add genre at text -->
         <TextView
             android:id="@+id/song_artist_and_genre"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/song_title"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/artwork_margin"
             android:layout_marginLeft="@dimen/artwork_margin"
             android:layout_marginBottom="@dimen/song_title_margin"
-            android:text="@{track.artistName}"
             android:textAppearance="@style/SongArtist"
             app:layout_constraintBottom_toBottomOf="@+id/song_image"
             app:layout_constraintStart_toEndOf="@+id/song_image"
             app:layout_constraintTop_toBottomOf="@+id/song_title"
+            app:formatArtistGenre="@{track}"
             tools:text="Artist (Genre)" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
