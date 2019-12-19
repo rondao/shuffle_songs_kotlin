@@ -1,57 +1,69 @@
 package com.rondao.shufflesongs.ui.songslist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.rondao.shufflesongs.database.ITracksDatabase
+import com.rondao.shufflesongs.database.getFakeDatabase
 import com.rondao.shufflesongs.domain.Track
 import com.rondao.shufflesongs.getOrAwaitValue
+import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.Rule
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class SongsListViewModelTest {
-    // Generate fake data for tests
-    private val songsByArtist: Map<Int, List<Track>>
-    init {
-        val map = mutableMapOf<Int, List<Track>>()
-        val size = 5
-
-        for (artistId in 1..size) {
-            val songsList = mutableListOf<Track>()
-            for (songNum in 1..size) {
-                songsList.add(Track(id = (size * artistId + songNum), artistId = artistId))
-            }
-            map[artistId] = songsList
-        }
-
-        songsByArtist = map
-    }
-
     private lateinit var songsListViewModel: SongsListViewModel
     private lateinit var shuffledSongsList: List<Track>
 
-    @Before
-    fun setupViewModel() {
-        songsListViewModel = SongsListViewModel()
-        songsListViewModel.shuffleSongs(songsByArtist)
-
-        shuffledSongsList = songsListViewModel.songsList.getOrAwaitValue()
-    }
+    private lateinit var fakeDatabase: ITracksDatabase
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
+    @Before
+    fun setupViewModel() {
+        fakeDatabase = getFakeDatabase()
+        songsListViewModel = SongsListViewModel(ApplicationProvider.getApplicationContext(), fakeDatabase)
+
+        // Need to observe for [songs] LiveData, so its value is available for ViewModel
+        songsListViewModel.songs.getOrAwaitValue()
+        songsListViewModel.shuffleSongs()
+
+        shuffledSongsList = songsListViewModel.songs.getOrAwaitValue()
+    }
+
     @Test
-    fun shuffleSongs_standardSongsList_containsEverySong() {
-        songsByArtist.forEach { (_, songsList) ->
-            songsList.forEach {
-                assertThat(shuffledSongsList, hasItem(it))
-            }
+    fun shuffleSongs_fakeSongsList_containsEverySong() {
+        val songs = songsListViewModel.songs.getOrAwaitValue()
+
+        assertThat(songs, not(nullValue()))
+        songs.forEach {
+            assertThat(shuffledSongsList, hasItem(it))
         }
     }
 
     @Test
-    fun shuffleSongs_standardSongsList_noAdjacent() {
+    fun shuffleSongs_fakeSongsList_containsEverySongFromDatabase() {
+        val dbSongs = fakeDatabase.trackDao.getTracks().value
+
+        assertThat(dbSongs, not(nullValue()))
+        val songs = dbSongs?.map { track ->
+            track.asDomainModel()
+        }
+
+        assertThat(songs, not(nullValue()))
+        songs?.forEach {
+            assertThat(shuffledSongsList, hasItem(it))
+        }
+    }
+
+    @Test
+    fun shuffleSongs_fakeSongsList_noAdjacent() {
         var previousSong = shuffledSongsList[0]
         shuffledSongsList.drop(1).forEach { currentSong ->
             assertThat(previousSong.artistId, not(equalTo(currentSong.artistId)))
@@ -62,11 +74,11 @@ class SongsListViewModelTest {
     @Test
     fun shuffleSongs_nullOrEmptySongsList_noChange() {
         songsListViewModel.shuffleSongs(null)
-        val shuffledSongsListAfterNull = songsListViewModel.songsList.getOrAwaitValue()
+        val shuffledSongsListAfterNull = songsListViewModel.songs.getOrAwaitValue()
         assertThat(shuffledSongsList, equalTo(shuffledSongsListAfterNull))
 
-        songsListViewModel.shuffleSongs(mapOf())
-        val shuffledSongsListAfterEmpty = songsListViewModel.songsList.getOrAwaitValue()
+        songsListViewModel.shuffleSongs(listOf())
+        val shuffledSongsListAfterEmpty = songsListViewModel.songs.getOrAwaitValue()
         assertThat(shuffledSongsList, equalTo(shuffledSongsListAfterEmpty))
     }
 }

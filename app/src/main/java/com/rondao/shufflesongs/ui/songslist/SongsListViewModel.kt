@@ -2,6 +2,7 @@ package com.rondao.shufflesongs.ui.songslist
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.rondao.shufflesongs.database.ITracksDatabase
 import com.rondao.shufflesongs.database.getDatabase
 import com.rondao.shufflesongs.domain.Track
 import com.rondao.shufflesongs.repository.TracksRepository
@@ -15,11 +16,12 @@ import kotlin.random.Random
 
 enum class SongsListApiStatus { LOADING, ERROR, DONE }
 
-class SongsListViewModel(application: Application) : AndroidViewModel(application) {
+class SongsListViewModel(application: Application,
+                         database: ITracksDatabase = getDatabase(application)) : AndroidViewModel(application) {
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private val tracksRepository = TracksRepository(getDatabase(application))
+    private val tracksRepository: TracksRepository = TracksRepository(database)
 
     private val songsSource = tracksRepository.tracks
     private val songsShuffled = MutableLiveData<List<Track>>(songsSource.value)
@@ -62,8 +64,8 @@ class SongsListViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelJob.cancel()
     }
 
-    fun shuffleSongs() {
-        val tracksByArtists = songsSource.value?.groupBy { it.artistId }
+    fun shuffleSongs(songs: List<Track>? = songsSource.value) {
+        val tracksByArtists = songs?.groupBy { it.artistId }
 
         val queue = convertToPriorityQueue(tracksByArtists)
         if (queue == null || queue.isEmpty()) return
@@ -102,7 +104,6 @@ class SongsListViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
-
 
     private fun convertToPriorityQueue(map: Map<Int, List<Track>>?) = map?.let {
         val queue = PriorityQueue<CompareListSize>()

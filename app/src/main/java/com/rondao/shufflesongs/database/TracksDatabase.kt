@@ -13,10 +13,12 @@ interface TrackDao {
     fun insertAll(vararg songs: DbTrack)
 }
 
-@Database(entities = [DbTrack::class], version = 1)
-abstract class TracksDatabase : RoomDatabase() {
-    abstract val trackDao: TrackDao
+interface ITracksDatabase {
+    val trackDao: TrackDao
 }
+
+@Database(entities = [DbTrack::class], version = 1)
+abstract class TracksDatabase : RoomDatabase(), ITracksDatabase
 
 private lateinit var INSTANCE: TracksDatabase
 

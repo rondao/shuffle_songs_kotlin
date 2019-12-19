@@ -2,14 +2,14 @@ package com.rondao.shufflesongs.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.rondao.shufflesongs.database.TracksDatabase
+import com.rondao.shufflesongs.database.ITracksDatabase
 import com.rondao.shufflesongs.domain.Track
 import com.rondao.shufflesongs.network.NetworkWrapperType
 import com.rondao.shufflesongs.network.ShuffleSongsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class TracksRepository(private val database: TracksDatabase) {
+class TracksRepository(private val database: ITracksDatabase) {
 
     val tracks: LiveData<List<Track>> =
             Transformations.map(database.trackDao.getTracks()) { tracks ->
