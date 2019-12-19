@@ -25,6 +25,14 @@ class SongsListViewModel(application: Application) : AndroidViewModel(applicatio
     private val songsShuffled = MutableLiveData<List<Track>>(songsSource.value)
 
     /**
+     * [_status] Mediator will check if LiveData from Database is not empty.
+     * Which means there is content available and status is completed.
+     */
+    private val _status = MediatorLiveData<SongsListApiStatus>()
+    val status: LiveData<SongsListApiStatus>
+        get() = _status
+
+    /**
      * [_songs] Mediator will join two LiveData.
      * Fetched from Database or a shuffled list.
      */
@@ -36,14 +44,14 @@ class SongsListViewModel(application: Application) : AndroidViewModel(applicatio
         _songs.addSource(songsSource) { value -> _songs.value = value }
         _songs.addSource(songsShuffled) { value -> _songs.value = value }
 
+        _status.addSource(songsSource) { value ->
+            if (value.isNotEmpty()) _status.value = SongsListApiStatus.DONE
+        }
+
         fetchTracksList()
     }
 
     val isSongsListNotEmpty = Transformations.map(songs) { it?.isNotEmpty() ?: true }
-
-    private val _status = MutableLiveData<SongsListApiStatus>()
-    val status: LiveData<SongsListApiStatus>
-        get() = _status
 
     val eventStatusFailed = Transformations.map(status) { status ->
         if (status == SongsListApiStatus.ERROR) LiveEvent(status) else null
@@ -86,9 +94,12 @@ class SongsListViewModel(application: Application) : AndroidViewModel(applicatio
         try {
             _status.value = SongsListApiStatus.LOADING
             tracksRepository.refreshTracks()
-            _status.value = SongsListApiStatus.DONE
         } catch (e: Exception) {
-            _status.value = SongsListApiStatus.ERROR
+            if (songs.value.isNullOrEmpty()) {
+                _status.value = SongsListApiStatus.ERROR
+            } else {
+                _status.value = SongsListApiStatus.DONE
+            }
         }
     }
 
