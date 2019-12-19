@@ -1,12 +1,10 @@
 package com.rondao.shufflesongs.ui.songslist
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
+import com.rondao.shufflesongs.database.getDatabase
 import com.rondao.shufflesongs.domain.Track
-import com.rondao.shufflesongs.network.NetworkWrapperType
-import com.rondao.shufflesongs.network.ShuffleSongsApi
+import com.rondao.shufflesongs.repository.TracksRepository
 import com.rondao.shufflesongs.utils.LiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,19 +15,31 @@ import kotlin.random.Random
 
 enum class SongsListApiStatus { LOADING, ERROR, DONE }
 
-class SongsListViewModel : ViewModel() {
-    private val artistsId = listOf(909253, 1171421960, 358714030, 1419227, 264111789)
-
+class SongsListViewModel(application: Application) : AndroidViewModel(application) {
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private var songsByArtist: Map<Int, List<Track>>? = null
+    private val tracksRepository = TracksRepository(getDatabase(application))
 
-    private val _songsList = MutableLiveData<List<Track>>()
-    val songsList: LiveData<List<Track>>
-        get() = _songsList
+    private val songsSource = tracksRepository.tracks
+    private val songsShuffled = MutableLiveData<List<Track>>(songsSource.value)
 
-    val isSongsListNotEmpty = Transformations.map(songsList) { it.isNotEmpty() }
+    /**
+     * [_songs] Mediator will join two LiveData.
+     * Fetched from Database or a shuffled list.
+     */
+    private val _songs = MediatorLiveData<List<Track>>()
+    val songs: LiveData<List<Track>>
+        get() = _songs
+
+    init {
+        _songs.addSource(songsSource) { value -> _songs.value = value }
+        _songs.addSource(songsShuffled) { value -> _songs.value = value }
+
+        fetchTracksList()
+    }
+
+    val isSongsListNotEmpty = Transformations.map(songs) { it?.isNotEmpty() ?: true }
 
     private val _status = MutableLiveData<SongsListApiStatus>()
     val status: LiveData<SongsListApiStatus>
@@ -44,8 +54,10 @@ class SongsListViewModel : ViewModel() {
         viewModelJob.cancel()
     }
 
-    fun shuffleSongs(_songsByArtist: Map<Int, List<Track>>? = songsByArtist) {
-        val queue = convertToPriorityQueue(_songsByArtist)
+    fun shuffleSongs() {
+        val tracksByArtists = songsSource.value?.groupBy { it.artistId }
+
+        val queue = convertToPriorityQueue(tracksByArtists)
         if (queue == null || queue.isEmpty()) return
 
         val shuffledList = mutableListOf<Track>()
@@ -66,29 +78,20 @@ class SongsListViewModel : ViewModel() {
              than all others that it would be impossible to avoid it. */
         if (lastList.list.isNotEmpty()) shuffledList.addAll(lastList.list)
 
-        _songsList.value = shuffledList
+        songsShuffled.value = shuffledList
     }
 
 
-    fun fetchSongsList() {
-        coroutineScope.launch {
-            try {
-                _status.value = SongsListApiStatus.LOADING
-
-                val songsAndArtists = ShuffleSongsApi
-                        .retrofitService.getSongs(artistsId.joinToString(","))
-                val networkSongsList = songsAndArtists.filterIsInstance<NetworkWrapperType.NetworkTrack>()
-                val songsList = networkSongsList.map { it.asDomainModel() }
-
-                songsByArtist = songsList.groupBy { it.artistId }
-                _songsList.value = songsList
-
-                _status.value = SongsListApiStatus.DONE
-            } catch (e: Exception) {
-                _status.value = SongsListApiStatus.ERROR
-            }
+    private fun fetchTracksList() = coroutineScope.launch {
+        try {
+            _status.value = SongsListApiStatus.LOADING
+            tracksRepository.refreshTracks()
+            _status.value = SongsListApiStatus.DONE
+        } catch (e: Exception) {
+            _status.value = SongsListApiStatus.ERROR
         }
     }
+
 
     private fun convertToPriorityQueue(map: Map<Int, List<Track>>?) = map?.let {
         val queue = PriorityQueue<CompareListSize>()
@@ -103,6 +106,16 @@ class SongsListViewModel : ViewModel() {
         shuffledList.add(biggestList.list.removeAt(indexSong))
 
         return biggestList
+    }
+
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(SongsListViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return SongsListViewModel(app) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
+        }
     }
 }
 

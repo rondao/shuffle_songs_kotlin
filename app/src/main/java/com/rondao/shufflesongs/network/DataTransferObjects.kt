@@ -53,21 +53,21 @@ sealed class NetworkWrapperType(val wrapperType: String) {
                     collectionName = collectionName,
                     collectionId = collectionId)
         }
-//        fun asDatabaseModel(): DbTrack {
-//            return DbTrack(id = id,
-//                    artistId = artistId,
-//                    artistName = artistName,
-//                    primaryGenreName = primaryGenreName,
-//                    trackName = trackName,
-//                    artworkUrl = artworkUrl,
-//                    releaseDate = releaseDate,
-//                    trackTimeMillis = trackTimeMillis,
-//                    trackExplicitness = trackExplicitness,
-//                    trackCensoredName = trackCensoredName,
-//                    country = country,
-//                    collectionName = collectionName,
-//                    collectionId = collectionId)
-//        }
+        fun asDatabaseModel(): DbTrack {
+            return DbTrack(id = id,
+                    artistId = artistId,
+                    artistName = artistName,
+                    primaryGenreName = primaryGenreName,
+                    trackName = trackName,
+                    artworkUrl = artworkUrl,
+                    releaseDate = releaseDate,
+                    trackTimeMillis = trackTimeMillis,
+                    trackExplicitness = trackExplicitness,
+                    trackCensoredName = trackCensoredName,
+                    country = country,
+                    collectionName = collectionName,
+                    collectionId = collectionId)
+        }
     }
 }
 

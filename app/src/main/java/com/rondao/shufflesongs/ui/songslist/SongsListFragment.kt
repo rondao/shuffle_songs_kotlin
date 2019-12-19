@@ -15,7 +15,11 @@ import com.rondao.shufflesongs.databinding.FragmentSongsListBinding
 class SongsListFragment : Fragment() {
 
     private val viewModel: SongsListViewModel by lazy {
-        ViewModelProviders.of(this).get(SongsListViewModel::class.java)
+        val activity = requireNotNull(this.activity) {
+            "You can only access the viewModel after onActivityCreated()"
+        }
+        ViewModelProviders.of(this, SongsListViewModel.Factory(activity.application))
+                .get(SongsListViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -24,7 +28,6 @@ class SongsListFragment : Fragment() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        viewModel.fetchSongsList()
 
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         getDrawable(context!!, R.drawable.divider)?.let { divider.setDrawable(it) }
@@ -33,7 +36,7 @@ class SongsListFragment : Fragment() {
         val adapter = SongsListAdapter()
         binding.songsList.adapter = adapter
 
-        viewModel.songsList.observe(viewLifecycleOwner, Observer {
+        viewModel.songs.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }

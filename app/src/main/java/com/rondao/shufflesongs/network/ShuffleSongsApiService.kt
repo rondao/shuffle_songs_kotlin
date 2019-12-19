@@ -24,10 +24,14 @@ private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .build()
 
+private val defaultArtistsQueryIds = listOf(909253, 1171421960, 358714030, 1419227, 264111789)
+
 interface ShuffleSongsApiService {
     @GET("lookup")
-    suspend fun getSongs(@Query("id", encoded = true) artist_ids: String,
-                         @Query("limit") limit: Int = 5): List<NetworkWrapperType>
+    suspend fun getSongs(@Query("id", encoded = true)
+                         artist_ids: String = defaultArtistsQueryIds.joinToString(","),
+                         @Query("limit")
+                         limit: Int = 5): List<NetworkWrapperType>
 }
 
 object ShuffleSongsApi {
