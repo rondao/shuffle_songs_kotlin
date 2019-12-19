@@ -16,6 +16,7 @@ fun getFakeDatabase(): ITracksDatabase = object : ITracksDatabase {
         }
     }
 
+    // Define a dummy database with hardcoded entries.
     init {
         val localSongs = mutableListOf<DbTrack>()
         val size = 5

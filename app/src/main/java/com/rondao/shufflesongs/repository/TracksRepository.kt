@@ -9,6 +9,9 @@ import com.rondao.shufflesongs.network.ShuffleSongsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+// TODO: For proper tests, should also have DI for remote source and Dispatcher.
+//  Currently [getSongs()] is really trying to access network during tests.
+//  Also, it will allow to perform tests on [TracksRepository] itself.
 class TracksRepository(private val database: ITracksDatabase) {
 
     val tracks: LiveData<List<Track>> =

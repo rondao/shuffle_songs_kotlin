@@ -18,13 +18,23 @@ enum class SongsListApiStatus { LOADING, ERROR, DONE }
 
 class SongsListViewModel(application: Application,
                          database: ITracksDatabase = getDatabase(application)) : AndroidViewModel(application) {
+    // Coroutine Job for fetching Network and Database.
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     private val tracksRepository: TracksRepository = TracksRepository(database)
 
+    // [LiveData] for songs retrieved by repository or shuffled.
     private val songsSource = tracksRepository.tracks
     private val songsShuffled = MutableLiveData<List<Track>>(songsSource.value)
+
+    /**
+     * [_songs] Mediator will join two [LiveData], [songsSource] and [songsShuffled].
+     * After shuffling new [List] order must be made available over database.
+     */
+    private val _songs = MediatorLiveData<List<Track>>()
+    val songs: LiveData<List<Track>>
+        get() = _songs
 
     /**
      * [_status] Mediator will check if LiveData from Database is not empty.
@@ -34,18 +44,13 @@ class SongsListViewModel(application: Application,
     val status: LiveData<SongsListApiStatus>
         get() = _status
 
-    /**
-     * [_songs] Mediator will join two LiveData.
-     * Fetched from Database or a shuffled list.
-     */
-    private val _songs = MediatorLiveData<List<Track>>()
-    val songs: LiveData<List<Track>>
-        get() = _songs
+
 
     init {
         _songs.addSource(songsSource) { value -> _songs.value = value }
         _songs.addSource(songsShuffled) { value -> _songs.value = value }
 
+        // When [songsSource] is available and exists, then loading is completed.
         _status.addSource(songsSource) { value ->
             if (value.isNotEmpty()) _status.value = SongsListApiStatus.DONE
         }
@@ -53,8 +58,14 @@ class SongsListViewModel(application: Application,
         fetchTracksList()
     }
 
+    /**
+     * When [songs] is available and exists, it is then ready for shuffling
+     */
     val isSongsListNotEmpty = Transformations.map(songs) { it?.isNotEmpty() ?: true }
 
+    /**
+     * One-time event when data retrieve fails.
+     */
     val eventStatusFailed = Transformations.map(status) { status ->
         if (status == SongsListApiStatus.ERROR) LiveEvent(status) else null
     }
@@ -64,6 +75,11 @@ class SongsListViewModel(application: Application,
         viewModelJob.cancel()
     }
 
+    /**
+     * Shuffles [songsSource] avoiding adjacent songs from same artist.
+     *
+     * @param songs the songs to shuffle. Uses [songsSource] by default. But can be changed for tests.     *
+     */
     fun shuffleSongs(songs: List<Track>? = songsSource.value) {
         val tracksByArtists = songs?.groupBy { it.artistId }
 
@@ -91,15 +107,21 @@ class SongsListViewModel(application: Application,
         songsShuffled.value = shuffledList
     }
 
-
+    /**
+     * Retrieve all songs from repository.
+     * Handles loading status.
+     */
     private fun fetchTracksList() = coroutineScope.launch {
         try {
             _status.value = SongsListApiStatus.LOADING
             tracksRepository.refreshTracks()
         } catch (e: Exception) {
+            // TODO: In case of internet connection problem, a Work scheduler
+            //  could wait until internet is available and try fetching again.
             if (songs.value.isNullOrEmpty()) {
                 _status.value = SongsListApiStatus.ERROR
             } else {
+                // Network may fail, but local database have a cache.
                 _status.value = SongsListApiStatus.DONE
             }
         }
@@ -120,13 +142,16 @@ class SongsListViewModel(application: Application,
         return biggestList
     }
 
+    /**
+     * [SongsListViewModel] factory to construct its arguments.
+     */
     class Factory(val app: Application) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(SongsListViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return SongsListViewModel(app) as T
             }
-            throw IllegalArgumentException("Unable to construct viewmodel")
+            throw IllegalArgumentException("Unable to construct SongsListViewModel")
         }
     }
 }

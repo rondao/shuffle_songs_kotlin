@@ -11,6 +11,10 @@ import retrofit2.http.Query
 
 private const val BASE_URL = "https://us-central1-tw-exercicio-mobile.cloudfunctions.net/"
 
+/**
+ * Json parser, using Polymorphic Adapter to build objects type of [NetworkArtist]
+ * and [NetworkTrack] according to "wrapperType" value from Json.
+ */
 private val moshi = Moshi.Builder()
         .add(PolymorphicJsonAdapterFactory.of(NetworkWrapperType::class.java, "wrapperType")
                 .withSubtype(NetworkWrapperType.NetworkArtist::class.java, NetworkWrapperTypes.artist.name)
@@ -18,6 +22,9 @@ private val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()
 
+/**
+ * Using [JEnvelopedResultConverter] converter to remove result encapsulation from Json.
+ */
 private val retrofit = Retrofit.Builder()
         .addConverterFactory(JEnvelopedResultConverter())
         .addConverterFactory(MoshiConverterFactory.create(moshi))

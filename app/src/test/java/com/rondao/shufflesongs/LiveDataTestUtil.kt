@@ -7,7 +7,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
 
-
+/**
+ * Utility for [LiveData], handling [observeForever] and [removeObserver].
+ */
 @VisibleForTesting(otherwise = VisibleForTesting.NONE)
 fun <T> LiveData<T>.getOrAwaitValue(
         time: Long = 2,

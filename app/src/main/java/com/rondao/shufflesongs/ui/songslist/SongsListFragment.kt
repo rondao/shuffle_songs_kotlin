@@ -14,6 +14,9 @@ import com.rondao.shufflesongs.databinding.FragmentSongsListBinding
 
 class SongsListFragment : Fragment() {
 
+    /**
+     * Lazy construction of this fragment ViewModel.
+     */
     private val viewModel: SongsListViewModel by lazy {
         val activity = requireNotNull(this.activity) {
             "You can only access the viewModel after onActivityCreated()"
@@ -29,6 +32,7 @@ class SongsListFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
+        // Add [RecyclerView] line separator.
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         getDrawable(context!!, R.drawable.divider)?.let { divider.setDrawable(it) }
         binding.songsList.addItemDecoration(divider)
@@ -36,12 +40,14 @@ class SongsListFragment : Fragment() {
         val adapter = SongsListAdapter()
         binding.songsList.adapter = adapter
 
+        // Observe [songs] to update [RecyclerView] adapter.
         viewModel.songs.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
             }
         })
 
+        // One-time event for failure warning.
         viewModel.eventStatusFailed.observe(viewLifecycleOwner, Observer {
             it?.getContentIfNotHandled()?.let {
                 Snackbar.make(binding.root, getString(R.string.snackbar_fail_retrieve_songs), Snackbar.LENGTH_LONG).show();
@@ -55,6 +61,7 @@ class SongsListFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.songs_list_menu, menu)
 
+        // Shuffling action button should only be available if [songs] have content.
         viewModel.isSongsListNotEmpty.observe(viewLifecycleOwner, Observer {
             menu.findItem(R.id.action_shuffle_songs).isVisible = it
         })

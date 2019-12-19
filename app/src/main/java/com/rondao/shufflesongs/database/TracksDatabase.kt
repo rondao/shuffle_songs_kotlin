@@ -13,6 +13,9 @@ interface TrackDao {
     fun insertAll(vararg songs: DbTrack)
 }
 
+/**
+ * Database interface allowing for fake database mocking.
+ */
 interface ITracksDatabase {
     val trackDao: TrackDao
 }

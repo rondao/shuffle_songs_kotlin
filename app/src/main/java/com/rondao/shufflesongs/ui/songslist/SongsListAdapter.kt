@@ -8,6 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rondao.shufflesongs.databinding.ListItemSongBinding
 import com.rondao.shufflesongs.domain.Track
 
+// TODO: Add a click listener with [binding], allowing [SongsListFragment] to
+//  retrieve clicked element and share with [SongsListViewModel].
+//  [SongsListViewModel] can set a [LiveEvent] for navigation, passing the
+//  selected [Track] with SafeArgs to another fragment. Showing song details
+//  with another layout and biding with [Track].
 class SongsListAdapter : ListAdapter<Track,
         SongsListAdapter.ViewHolder>(SongsListDiffCallback()) {
 
@@ -20,7 +25,7 @@ class SongsListAdapter : ListAdapter<Track,
         return ViewHolder.from(parent)
     }
 
-    class ViewHolder private constructor(val binding: ListItemSongBinding)
+    class ViewHolder private constructor(private val binding: ListItemSongBinding)
         : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Track) {

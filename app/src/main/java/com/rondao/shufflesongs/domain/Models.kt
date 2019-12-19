@@ -1,5 +1,8 @@
 package com.rondao.shufflesongs.domain
 
+// Artist model was not needed for business logic.
+// But could be used if needed.
+//
 //data class Artist(val id: Int = 0,
 //                    val artistType: String = "",
 //                    val artistName: String = "",

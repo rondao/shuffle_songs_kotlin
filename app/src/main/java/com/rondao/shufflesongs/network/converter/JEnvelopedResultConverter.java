@@ -1,19 +1,21 @@
 package com.rondao.shufflesongs.network.converter;
 
-import android.util.Log;
-
 import com.squareup.moshi.Types;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.List;
 
-import kotlin.reflect.jvm.internal.impl.types.WrappedType;
 import okhttp3.ResponseBody;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 
+/**
+ * Whatever [Type] this converter receives, it will delegate the conversion forward,
+ * but changing the [Type] to [EnvelopedResult<Type>].
+ *
+ * After receiving the [EnvelopedResult<Type>] object result,
+ * it can decapsulate the result and retrieve it.
+ */
 public class JEnvelopedResultConverter extends Converter.Factory {
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations, Retrofit retrofit) {

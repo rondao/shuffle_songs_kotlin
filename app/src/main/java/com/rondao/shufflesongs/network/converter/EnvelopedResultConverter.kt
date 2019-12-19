@@ -6,6 +6,12 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.lang.reflect.Type
 
+/**
+ * Attempt of [JEnvelopedResultConverter] implementation in Kotlin.
+ * However, [EnvelopedResult<*>] object received is actually [EnvelopedResult<Any?>].
+ *
+ * For some reason, the Star Projection did not went forward.
+ */
 class EnvelopedResultConverter : Converter.Factory() {
     override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
         val envelopedType = Types.newParameterizedType(EnvelopedResult::class.java, Types.getRawType(type))

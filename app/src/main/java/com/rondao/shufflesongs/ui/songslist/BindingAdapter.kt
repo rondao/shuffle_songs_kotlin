@@ -11,6 +11,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.rondao.shufflesongs.R
 import com.rondao.shufflesongs.domain.Track
 
+/**
+ * Customize [ImageView] with image from [imgUrl] with [Glide].
+ * @param ImageView to customize image.
+ * @param imgUrl to fetch image from.
+ */
 @BindingAdapter("imageUrl")
 fun bindImage(imgView: ImageView, imgUrl: String?) {
     imgUrl?.let {
@@ -25,11 +30,21 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
     }
 }
 
+/**
+ * Set [TextView] text as artist name and genre from [Track].
+ * @param txtView to customize text.
+ * @param song to get information from.
+ */
 @BindingAdapter("formatArtistGenre")
 fun bindFormatSongTitle(txtView: TextView, song: Track) {
     txtView.text = "${song.artistName} (${song.primaryGenreName})"
 }
 
+/**
+ * Set visibility according to [status] of loading.
+ * @param statusProgressBar to hide or show.
+ * @param status containing if is loading.
+ */
 @BindingAdapter("songsApiStatusLoading")
 fun bindStatusLoading(statusProgressBar: ContentLoadingProgressBar, status: SongsListApiStatus?) {
     when (status) {
@@ -42,6 +57,11 @@ fun bindStatusLoading(statusProgressBar: ContentLoadingProgressBar, status: Song
     }
 }
 
+/**
+ * Set visibility according to [status] of error.
+ * @param statusImageView to hide or show.
+ * @param status containing if is error.
+ */
 @BindingAdapter("songsApiStatusError")
 fun bindStatusError(statusImageView: ImageView, status: SongsListApiStatus?) {
     when (status) {
