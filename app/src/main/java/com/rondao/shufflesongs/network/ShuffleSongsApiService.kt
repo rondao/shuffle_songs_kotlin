@@ -17,8 +17,8 @@ private const val BASE_URL = "https://us-central1-tw-exercicio-mobile.cloudfunct
  */
 private val moshi = Moshi.Builder()
         .add(PolymorphicJsonAdapterFactory.of(NetworkWrapperType::class.java, "wrapperType")
-                .withSubtype(NetworkWrapperType.NetworkArtist::class.java, NetworkWrapperTypes.artist.name)
-                .withSubtype(NetworkWrapperType.NetworkTrack::class.java, NetworkWrapperTypes.track.name))
+                .withSubtype(NetworkWrapperType.NetworkArtist::class.java, NetworkWrapperTypes.Artist.name)
+                .withSubtype(NetworkWrapperType.NetworkTrack::class.java, NetworkWrapperTypes.Track.name))
         .add(KotlinJsonAdapterFactory())
         .build()
 

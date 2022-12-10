@@ -90,9 +90,9 @@ class SongsListViewModel(application: Application,
 
         // [lastList] is always absent when adding random music inside loop.
         // This guarantees two Artists' song are never adjacent.
-        var lastList = addRandomMusic(queue.poll(), shuffledList)
+        var lastList = addRandomMusic(queue.poll()!!, shuffledList)
         while (queue.isNotEmpty()) {
-            val currentList = addRandomMusic(queue.poll(), shuffledList)
+            val currentList = addRandomMusic(queue.poll()!!, shuffledList)
 
             if (lastList.list.isNotEmpty()) queue.add(lastList)
             lastList = currentList
@@ -145,8 +145,8 @@ class SongsListViewModel(application: Application,
     /**
      * [SongsListViewModel] factory to construct its arguments.
      */
-    class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    class Factory(private val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(SongsListViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return SongsListViewModel(app) as T

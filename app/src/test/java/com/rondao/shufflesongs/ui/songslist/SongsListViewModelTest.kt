@@ -7,12 +7,11 @@ import com.rondao.shufflesongs.database.ITracksDatabase
 import com.rondao.shufflesongs.database.getFakeDatabase
 import com.rondao.shufflesongs.domain.Track
 import com.rondao.shufflesongs.getOrAwaitValue
-import kotlinx.coroutines.Dispatchers
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.Test
 import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)

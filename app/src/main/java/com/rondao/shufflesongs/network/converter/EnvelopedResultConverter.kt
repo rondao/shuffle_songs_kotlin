@@ -13,7 +13,7 @@ import java.lang.reflect.Type
  * For some reason, the Star Projection did not went forward.
  */
 class EnvelopedResultConverter : Converter.Factory() {
-    override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *>? {
+    override fun responseBodyConverter(type: Type, annotations: Array<Annotation>, retrofit: Retrofit): Converter<ResponseBody, *> {
         val envelopedType = Types.newParameterizedType(EnvelopedResult::class.java, Types.getRawType(type))
         val delegate = retrofit.nextResponseBodyConverter<EnvelopedResult<*>>(this, envelopedType, annotations)
 

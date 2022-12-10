@@ -1,14 +1,13 @@
 package com.rondao.shufflesongs.network
 
 import com.rondao.shufflesongs.database.DbTrack
-import com.rondao.shufflesongs.domain.Track
 
-sealed class NetworkWrapperType(val wrapperType: String) {
+sealed class NetworkWrapperType {
 
     data class NetworkArtist(val id: Int,
                       val artistType: String,
                       val artistName: String,
-                      val primaryGenreName: String) : NetworkWrapperType(NetworkWrapperTypes.artist.name) {
+                      val primaryGenreName: String) : NetworkWrapperType() {
 //        fun asDomainModel(): Artist {
 //            return Artist(id = id,
 //                    artistType = artistType,
@@ -37,22 +36,22 @@ sealed class NetworkWrapperType(val wrapperType: String) {
                      val trackCensoredName: String = "",
                      val country: String = "",
                      val collectionName: String = "",
-                     val collectionId: Int = 0) : NetworkWrapperType(NetworkWrapperTypes.track.name) {
-        fun asDomainModel(): Track {
-            return Track(id = id,
-                    artistId = artistId,
-                    artistName = artistName,
-                    primaryGenreName = primaryGenreName,
-                    trackName = trackName,
-                    artworkUrl = artworkUrl,
-                    releaseDate = releaseDate,
-                    trackTimeMillis = trackTimeMillis,
-                    trackExplicitness = trackExplicitness,
-                    trackCensoredName = trackCensoredName,
-                    country = country,
-                    collectionName = collectionName,
-                    collectionId = collectionId)
-        }
+                     val collectionId: Int = 0) : NetworkWrapperType() {
+//        fun asDomainModel(): Track {
+//            return Track(id = id,
+//                    artistId = artistId,
+//                    artistName = artistName,
+//                    primaryGenreName = primaryGenreName,
+//                    trackName = trackName,
+//                    artworkUrl = artworkUrl,
+//                    releaseDate = releaseDate,
+//                    trackTimeMillis = trackTimeMillis,
+//                    trackExplicitness = trackExplicitness,
+//                    trackCensoredName = trackCensoredName,
+//                    country = country,
+//                    collectionName = collectionName,
+//                    collectionId = collectionId)
+//        }
         fun asDatabaseModel(): DbTrack {
             return DbTrack(id = id,
                     artistId = artistId,
@@ -76,6 +75,6 @@ sealed class NetworkWrapperType(val wrapperType: String) {
  * Variable names starts Lowercase to match name with json.
  */
 enum class NetworkWrapperTypes {
-    artist,
-    track
+    Artist,
+    Track
 }

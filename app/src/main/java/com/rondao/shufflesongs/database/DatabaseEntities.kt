@@ -20,19 +20,19 @@ import com.rondao.shufflesongs.domain.Track
 @Entity
 data class DbTrack constructor (
         @PrimaryKey
-        val id: Int = 0,
-        val artistId: Int = 0,
-        val artistName: String = "",
-        val primaryGenreName: String = "",
-        val trackName: String = "",
-        val artworkUrl: String = "",
-        val releaseDate: String = "",
-        val trackTimeMillis: Int = 0,
-        val trackExplicitness: String = "",
-        val trackCensoredName: String = "",
-        val country: String = "",
-        val collectionName: String = "",
-        val collectionId: Int = 0) {
+        var id: Int = 0,
+        var artistId: Int = 0,
+        var artistName: String = "",
+        var primaryGenreName: String = "",
+        var trackName: String = "",
+        var artworkUrl: String = "",
+        var releaseDate: String = "",
+        var trackTimeMillis: Int = 0,
+        var trackExplicitness: String = "",
+        var trackCensoredName: String = "",
+        var country: String = "",
+        var collectionName: String = "",
+        var collectionId: Int = 0) {
     fun asDomainModel(): Track {
         return Track(id = id,
                 artistId = artistId,

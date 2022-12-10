@@ -20,7 +20,7 @@ interface ITracksDatabase {
     val trackDao: TrackDao
 }
 
-@Database(entities = [DbTrack::class], version = 1)
+@Database(entities = [DbTrack::class], version = 1, exportSchema = false)
 abstract class TracksDatabase : RoomDatabase(), ITracksDatabase
 
 private lateinit var INSTANCE: TracksDatabase
